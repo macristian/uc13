@@ -9,33 +9,33 @@ export default function App() {
   const [currentNumber, setCurrentNumber] = useState("")
   const [lastNumber, setLastNumber] = useState("")
 
+  const splitNumbers = currentNumber.split(' ')
+  const firstNumber = parseFloat(splitNumbers[0])
+  const previousNumber = parseFloat(splitNumbers[2])
+  const operator = splitNumbers[1]
 
   function calculator() {
-    const splitNumbers = currentNumber.split(' ')
-    const fistNumber = parseFloat(splitNumbers[0])
-    const lastNumber = parseFloat(splitNumbers[2])
-    const operator = splitNumbers[1]
 
     // Faz ação referente tecla pressionada
     switch (operator) {
       case '+':
-        setCurrentNumber((fistNumber + lastNumber).toString())
+        setCurrentNumber((firstNumber + previousNumber).toString())
         return
       case '-':
-        setCurrentNumber((fistNumber - lastNumber).toString())
+        setCurrentNumber((firstNumber - previousNumber).toString())
         return
       case 'x':
-        setCurrentNumber((fistNumber * lastNumber).toString())
+        setCurrentNumber((firstNumber * previousNumber).toString())
         return
       case '/':
-        setCurrentNumber((fistNumber / lastNumber).toString())
+        setCurrentNumber((firstNumber / previousNumber).toString())
         return
     }
   }
 
   function handleInput(buttonPressed) {
     console.log(buttonPressed) // Mostra no Console a tecla pressionada
-    if (buttonPressed === '+' | buttonPressed === "-" | buttonPressed === "x" | buttonPressed === "/" | buttonPressed === "%") {
+    if (buttonPressed === '+' | buttonPressed === "-" | buttonPressed === "x" | buttonPressed === "/") {
       setCurrentNumber(currentNumber + " " + buttonPressed + " ")
       return
     }
@@ -55,7 +55,11 @@ export default function App() {
         setCurrentNumber(-currentNumber)
         return
       case '%':
-        setLastNumber(lastNumber * currentNumber / 100)
+        setLastNumber(`${ firstNumber }` + `${ operator }` + `${ (previousNumber * firstNumber) * 0.01 }` + " = ")
+        operator !== '-' ?
+        setCurrentNumber(`${ firstNumber + (previousNumber * firstNumber) * 0.01 }`)
+        :
+        setCurrentNumber(`${ firstNumber - (previousNumber * firstNumber) * 0.01 }`)
         return
     }
 
@@ -77,12 +81,12 @@ export default function App() {
 
             {buttons.map((button) =>
               button === '=' ? // Mapeamento do botão =
-                <TouchableOpacity onPress={() => handleInput(button)} key={button} style={[styles.button, { backgroundColor: '#3dd0e3' }]}>
-                  <Text style={[styles.textButton, { color: "white", fontSize: 30 }]}>{button}</Text>
+                <TouchableOpacity onPress={() => handleInput(button)} key={button} style={[styles.button, { backgroundColor: '#1e1240' }]}>
+                  <Text style={[styles.textButton, { color: "#FFF", fontSize: 30 }]}>{button}</Text>
                 </TouchableOpacity>
                 : // Mapeamento dos outros botões
                 <TouchableOpacity onPress={() => handleInput(button)} key={button} style={styles.button}>
-                  <Text style={[styles.textButton, { color: typeof (button) === 'number' ? 'black' : '#0093a6' }]}>{button}</Text>
+                  <Text style={[styles.textButton, { color: typeof (button) === 'number' ? '#FFF' : '#808180' }]}>{button}</Text>
                 </TouchableOpacity>
             )}
           </View>
@@ -100,10 +104,10 @@ const styles = StyleSheet.create({
   results: {
     flex: 2,
     justifyContent: "center",
-    backgroundColor: "#f5f5f5"
+    backgroundColor: "#1e1240"
   },
   resultText: {
-    color: "#282F38",
+    color: "#FFF",
     fontSize: 32,
     fontWeight: "bold",
     padding: 12,
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: '#3d0075',
     alignItems: 'center',
     justifyContent: 'center',
     minWidth: 90,
